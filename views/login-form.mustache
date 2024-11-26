@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<!-- The side navigation menu -->
+    <div id="mySidenav" class="sidenav">
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <img src="assets/menu.png" span onclick="toggleNav()" class="toggle-btn"></span>
+        <h2>
+            <?php 
+                if (isset($_SESSION['firstname'])) {
+                    echo htmlspecialchars($_SESSION['firstname']);  // Display the user's first name
+                } else {
+                    echo "Username";  // Display default text if not logged in
+                }
+            ?>
+        </h2>
+        <ul>
+            <a href=""><img src="/assets/logo.png" class="logo" alt="Logo"></a>
+            <li><a href="/">Home</a></li>
+            <li><a href="">Menu</a></li>
+            <li><a href="">FAQs</a></li>
+            <li><a href="">Contact</a></li>
+        </ul>
+        <!-- Register and Login Buttons -->
+        <div class="auth-links">
+            <a href="/register" class="register-btn">Register</a>
+            <a href="/login" class="login-btn">Login</a>
+        </div>
+            <!-- JavaScript -->
+    <script src="script.js">
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar ul');
+            menu.classList.toggle('active');
+        }
+    </script>
+    </nav>
+    <div class="main__container">
+        <h2>Login</h2>
+
+        {{#errors}}
+        <div class="alert alert-danger" role="alert">
+            <ul>
+                {{#errors}}
+                    <li>{{.}}</li>
+                {{/errors}}
+            </ul>
+        </div>
+        {{/errors}}
+
+        <form action="/login" method="post">
+            <div>
+                <label for="email">Email (required):</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+    
+            <div>
+                <label for="password">Password (required):</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+    
+            <div class="button-container">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal for successful login -->
+    <div id="loginSuccessModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome!</h2>
+            <p>You have successfully logged in.</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if the login was successful from the session
+        window.onload = function() {
+            <?php if (isset($_SESSION['login_success']) && $_SESSION['login_success'] === true): ?>
+                // Show the modal
+                var modal = document.getElementById("loginSuccessModal");
+                var span = document.getElementsByClassName("close")[0];
+
+                modal.style.display = "block";
+
+                // Close the modal when the user clicks the close button
+                span.onclick = function() {
+                    modal.style.display = "none";
+                }
+
+                // Close the modal if the user clicks outside of it
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+
+                // Reset the session flag after showing the popup
+                <?php unset($_SESSION['login_success']); ?>
+            <?php endif; ?>
+        }
+    </script>
+</body>
+</html>
